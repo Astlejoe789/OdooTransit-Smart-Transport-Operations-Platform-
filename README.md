@@ -14,7 +14,7 @@ workflow and a tamper-evident audit trail.
 ## Overview
 
 TransitOps replaces spreadsheets and chat threads with a centralized operations
-console. It enables teams to:
+console. It enables teams to :
 
 - Manage fleet and vehicles with full lifecycle status
 - Maintain driver records, licenses, and availability
