@@ -1,0 +1,10 @@
+# TransitOps
+
+> A modern fleet operations platform for trips, dispatch, maintenance, fuel, reporting, and compliance — with a rules-driven dispatch workflow and a tamper-evident audit trail.
+
+TransitOps helps fleet operators manage vehicles and drivers, create and dispatch trips against an availability-aware rules engine, track maintenance and fuel, analyze utilization and ROI, and keep a hash-chained audit log for compliance.
+
+## Pages
+
+- [Home](/): Product overview and feature highlights.
+- [Sign in / Sign up](/auth): Access the operations dashboard (role-based access control).

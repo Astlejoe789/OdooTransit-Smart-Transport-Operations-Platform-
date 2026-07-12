@@ -1,0 +1,248 @@
+import { createFileRoute, redirect, useNavigate, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { z } from "zod";
+import { Truck, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
+const searchSchema = z.object({
+  redirect: z.string().optional().catch(undefined),
+});
+
+export const Route = createFileRoute("/auth")({
+  validateSearch: searchSchema,
+  beforeLoad: async () => {
+    if (typeof window === "undefined") return;
+    const { data } = await supabase.auth.getSession();
+    if (data.session) throw redirect({ to: "/dashboard" });
+  },
+  component: AuthPage,
+});
+
+const credentialsSchema = z.object({
+  email: z.string().trim().email("Enter a valid email address").max(255),
+  password: z.string().min(6, "Password must be at least 6 characters").max(72),
+});
+
+function AuthPage() {
+  const navigate = useNavigate();
+  const search = Route.useSearch();
+  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/dashboard";
+
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((_e, session) => {
+      if (session) navigate({ to: target });
+    });
+    return () => data.subscription.unsubscribe();
+  }, [navigate, target]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const parsed = credentialsSchema.safeParse({ email, password });
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0].message);
+      return;
+    }
+    setLoading(true);
+    try {
+      if (mode === "login") {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        toast.success("Welcome back");
+      } else {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}${target}`,
+            data: { full_name: fullName },
+          },
+        });
+        if (error) throw error;
+        toast.success("Account created");
+      }
+      navigate({ to: target });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Authentication failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleGoogle() {
+    setLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+      if (result.error) {
+        toast.error("Google sign-in failed");
+        setLoading(false);
+        return;
+      }
+      if (result.redirected) return;
+      navigate({ to: target });
+    } catch {
+      toast.error("Google sign-in failed");
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="grid min-h-screen lg:grid-cols-2">
+      {/* Brand panel */}
+      <div className="relative hidden overflow-hidden bg-sidebar lg:flex lg:flex-col lg:justify-between p-12">
+        <div className="absolute inset-0 grid-hatch opacity-60" />
+        <Link to="/" className="relative flex items-center gap-2.5 text-sidebar-foreground">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-foreground">
+            <Truck className="h-5 w-5" />
+          </span>
+          <span className="font-display text-xl font-bold tracking-tight">TransitOps</span>
+        </Link>
+        <div className="relative max-w-md">
+          <h2 className="font-display text-3xl font-bold leading-tight text-foreground">
+            The operations console for modern fleets.
+          </h2>
+          <p className="mt-4 text-muted-foreground">
+            Dispatch with confidence, track every asset, and keep an auditable trail across trips,
+            maintenance, fuel, and compliance.
+          </p>
+        </div>
+        <p className="relative text-xs text-muted-foreground">
+          Secured with role-based access control.
+        </p>
+      </div>
+
+      {/* Form panel */}
+      <div className="flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-sm">
+          <Link to="/" className="mb-8 flex items-center gap-2.5 lg:hidden">
+            <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground">
+              <Truck className="h-4.5 w-4.5" />
+            </span>
+            <span className="font-display text-lg font-bold">TransitOps</span>
+          </Link>
+
+          <h1 className="font-display text-2xl font-bold">
+            {mode === "login" ? "Sign in" : "Create your account"}
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {mode === "login"
+              ? "Access your fleet operations dashboard."
+              : "The first account becomes the workspace administrator."}
+          </p>
+
+          <Tabs value={mode} onValueChange={(v) => setMode(v as "login" | "signup")} className="mt-6">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="login">Sign in</TabsTrigger>
+              <TabsTrigger value="signup">Sign up</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value={mode} className="mt-6">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {mode === "signup" && (
+                  <div className="space-y-2">
+                    <Label htmlFor="fullName">Full name</Label>
+                    <Input
+                      id="fullName"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Alex Rivera"
+                      autoComplete="name"
+                    />
+                  </div>
+                )}
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@fleet.co"
+                    autoComplete="email"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    autoComplete={mode === "login" ? "current-password" : "new-password"}
+                    required
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {mode === "login" ? "Sign in" : "Create account"}
+                </Button>
+              </form>
+
+              <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
+                <span className="h-px flex-1 bg-border" />
+                OR
+                <span className="h-px flex-1 bg-border" />
+              </div>
+
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={handleGoogle}
+                disabled={loading}
+              >
+                <GoogleIcon className="mr-2 h-4 w-4" />
+                Continue with Google
+              </Button>
+            </TabsContent>
+          </Tabs>
+
+          <p className="mt-8 text-center text-xs text-muted-foreground">
+            <Link to="/" className="hover:text-foreground">
+              ← Back to home
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GoogleIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="#4285F4"
+        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06L5.84 9.9C6.71 7.31 9.14 5.38 12 5.38z"
+      />
+    </svg>
+  );
+}

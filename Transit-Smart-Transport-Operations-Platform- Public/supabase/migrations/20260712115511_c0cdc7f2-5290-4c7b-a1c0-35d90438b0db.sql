@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.write_audit() FROM PUBLIC, anon, authenticated;
