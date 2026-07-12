@@ -42,7 +42,7 @@ Search, filter, and manage vehicles with availability status.
 ### Role-based sign in
 Email/password and Google sign-in, secured with role-based access control.
 
-![Sign in](https://driver-dash-plus.lovable.app/__l5e/assets-v1/2fff71e8-c282-42e4-8e00-b0b3b3c21e2a/transitops-auth.png)
+<img width="1918" height="988" alt="image" src="https://github.com/user-attachments/assets/1a3c0453-763d-4d65-b0e5-257c204a9235" />
 
 ---
 
