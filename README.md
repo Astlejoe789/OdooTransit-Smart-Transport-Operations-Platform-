@@ -49,6 +49,7 @@ Email/password and Google sign-in, secured with role-based access control.
 ## Key Features
 
 ### Authentication & Access
+
 - Email/password and Google sign-in
 - Role-based access control (admin, manager, dispatcher, driver, viewer)
 - Roles stored in a dedicated table with a security-definer `has_role()` helper
@@ -56,6 +57,7 @@ Email/password and Google sign-in, secured with role-based access control.
 - Row-Level Security (RLS) on every data table
 
 ### Fleet Management
+
 - Vehicle registration and CRUD
 - Availability & lifecycle status tracking
 - Search and filters
@@ -66,30 +68,36 @@ Email/password and Google sign-in, secured with role-based access control.
 - Link drivers to user accounts for the Driver Portal
 
 ### Trip & Dispatch
+
 - Trip planning with vehicle and driver assignment
 - Availability-aware dispatch validation (checklist gate)
 - Plain-English rationale for dispatch decisions
 - Trip status workflow (scheduled → dispatched → in progress → completed)
 
 ### Maintenance
+
 - Service records and preventive maintenance
 - Service history and vehicle health tracking
 - Automatic vehicle status transitions
 
 ### Fuel & Expenses
+
 - Fuel logs and expense management
 - Cost tracking with category breakdowns
 
 ### Reports & Analytics
+
 - Fleet utilization and ROI
 - Fuel efficiency and operational cost analysis
 - Dashboard KPIs, charts, and CSV export
 
 ### AI Fleet Copilot
+
 - Natural-language questions answered from live, RLS-scoped fleet data
 - Powered by the Lovable AI Gateway (Google Gemini)
 
 ### Audit & Compliance
+
 - Hash-chained audit log written by database triggers
 - Client-side chain verification to detect tampering
 
