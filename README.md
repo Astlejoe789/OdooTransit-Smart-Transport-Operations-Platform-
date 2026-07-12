@@ -1,240 +1,230 @@
-# 🚛 TransitOps AI – Smart Transport Operations Platform
+# 🚛 TransitOps — Smart Fleet Operations Platform
 
-A modern transport and fleet management platform that helps organizations manage vehicles, drivers, trips, maintenance, fuel, expenses, and operational analytics from a single dashboard.
+A modern transport and fleet operations platform that lets organizations run
+vehicles, drivers, trips, maintenance, fuel, expenses, compliance, and
+AI-assisted dispatch from a single dashboard — with a rules-driven dispatch
+workflow and a tamper-evident audit trail.
 
-Built with **Next.js**, **Express.js**, **PostgreSQL**, **Prisma**, and AI-powered automation.
+**Live app:** https://driver-dash-plus.lovable.app
+
+![TransitOps landing page](https://driver-dash-plus.lovable.app/__l5e/assets-v1/39894860-be8a-47b0-831c-58107d9b2ba0/transitops-landing.png)
 
 ---
 
 ## Overview
 
-TransitOps AI is an enterprise-grade transport operations platform designed to replace manual fleet management with a centralized digital solution.
+TransitOps replaces spreadsheets and chat threads with a centralized operations
+console. It enables teams to:
 
-The platform enables organizations to:
+- Manage fleet and vehicles with full lifecycle status
+- Maintain driver records, licenses, and availability
+- Plan, validate, and dispatch trips against a rules engine
+- Track maintenance schedules and service history
+- Log fuel and operational expenses
+- Analyze utilization, cost, and efficiency
+- Keep a hash-chained, tamper-evident audit log for compliance
+- Ask an AI Fleet Copilot questions about live, permission-scoped data
 
-* Manage fleet and vehicles
-* Maintain driver records
-* Plan and dispatch trips
-* Track maintenance schedules
-* Monitor fuel and operational expenses
-* Generate reports and analytics
-* Ensure compliance and auditability
-* Automate workflows using AI
+---
+
+## Screenshots
+
+### Operations dashboard
+Real-time KPIs, recent activity, and module rollout status.
+
+![Dashboard](https://driver-dash-plus.lovable.app/__l5e/assets-v1/39f32550-8028-498e-a7ca-a3ac0f1397d4/transitops-dashboard.png)
+
+### Fleet registry
+Search, filter, and manage vehicles with availability status.
+
+![Vehicles](https://driver-dash-plus.lovable.app/__l5e/assets-v1/5647ff43-f1b0-4866-9330-80994792b603/transitops-vehicles.png)
+
+### Role-based sign in
+Email/password and Google sign-in, secured with role-based access control.
+
+![Sign in](https://driver-dash-plus.lovable.app/__l5e/assets-v1/2fff71e8-c282-42e4-8e00-b0b3b3c21e2a/transitops-auth.png)
 
 ---
 
 ## Key Features
 
-### Authentication
-
-* JWT Authentication
-* Role-Based Access Control (RBAC)
-* Secure Login
-* Protected Routes
+### Authentication & Access
+- Email/password and Google sign-in
+- Role-based access control (admin, manager, dispatcher, driver, viewer)
+- Roles stored in a dedicated table with a security-definer `has_role()` helper
+- Protected routes and per-page role gating
+- Row-Level Security (RLS) on every data table
 
 ### Fleet Management
-
-* Vehicle Registration
-* Vehicle CRUD Operations
-* Availability Tracking
-* Search & Filters
+- Vehicle registration and CRUD
+- Availability & lifecycle status tracking
+- Search and filters
 
 ### Driver Management
-
-* Driver Profiles
-* License Tracking
-* Driver Availability
-* Safety Information
+- Driver profiles and license tracking
+- Driver availability
+- Link drivers to user accounts for the Driver Portal
 
 ### Trip & Dispatch
-
-* Trip Planning
-* Vehicle Assignment
-* Driver Assignment
-* Dispatch Validation
-* Trip Status Workflow
+- Trip planning with vehicle and driver assignment
+- Availability-aware dispatch validation (checklist gate)
+- Plain-English rationale for dispatch decisions
+- Trip status workflow (scheduled → dispatched → in progress → completed)
 
 ### Maintenance
-
-* Maintenance Records
-* Preventive Maintenance
-* Service History
-* Vehicle Health Tracking
+- Service records and preventive maintenance
+- Service history and vehicle health tracking
+- Automatic vehicle status transitions
 
 ### Fuel & Expenses
-
-* Fuel Logs
-* Expense Management
-* Receipt Upload
-* Cost Tracking
+- Fuel logs and expense management
+- Cost tracking with category breakdowns
 
 ### Reports & Analytics
+- Fleet utilization and ROI
+- Fuel efficiency and operational cost analysis
+- Dashboard KPIs, charts, and CSV export
 
-* Fleet Utilization
-* Fuel Efficiency
-* Maintenance Reports
-* Operational Cost Analysis
-* Dashboard KPIs
+### AI Fleet Copilot
+- Natural-language questions answered from live, RLS-scoped fleet data
+- Powered by the Lovable AI Gateway (Google Gemini)
 
-### AI Features
-
-* OCR Receipt Processing
-* Spreadsheet Import
-* AI Data Mapping
-* Smart Dispatch Assistant
-* AI Insights & Recommendations
+### Audit & Compliance
+- Hash-chained audit log written by database triggers
+- Client-side chain verification to detect tampering
 
 ---
 
 ## Business Rules
 
-The system automatically enforces important operational rules such as:
+The platform enforces operational rules automatically, including:
 
-* Unique vehicle registration numbers
-* No dispatch for vehicles under maintenance
-* No dispatch for retired vehicles
-* Driver license validation
-* Driver and vehicle availability checks
-* Cargo capacity validation
-* Automatic status updates during dispatch and trip completion
+- Unique vehicle registration numbers
+- No dispatch for vehicles under maintenance or retired
+- Driver license and availability validation
+- Vehicle availability checks
+- Cargo/capacity validation
+- Automatic status updates during dispatch and trip completion
 
 ---
 
 ## Technology Stack
 
+This project is built on the **Lovable** platform. The original Next.js /
+Express / Prisma specification was mapped onto Lovable's integrated stack:
+
 ### Frontend
+- **TanStack Start** (React 19, file-based routing, SSR)
+- **TypeScript**
+- **Tailwind CSS v4** (OKLCH design tokens)
+- **shadcn/ui** components
+- **TanStack Query** for data fetching
+- **Recharts** for analytics
+- **Vite 7** build tooling
 
-* Next.js
-* React
-* TypeScript
-* Tailwind CSS
-* Shadcn UI
+### Backend (Lovable Cloud)
+- **PostgreSQL** database
+- Row-Level Security (RLS) for authorization
+- Database migrations, functions, and triggers
+- **TanStack server functions** (`createServerFn`) for app-internal server logic
+- Managed authentication (email/password + Google OAuth)
 
-### Backend
-
-* Node.js
-* Express.js
-* PostgreSQL
-* Prisma ORM
-
-### Authentication
-
-* JWT
-* bcrypt
-* RBAC
-
-### AI & Services
-
-* Groq API
-* Gemini API
-* OCR Integration
-
-### DevOps
-
-* Docker
-* GitHub Actions
-* Vercel
-* Railway / Render
+### AI
+- **Lovable AI Gateway** (Google Gemini) — no external key required
 
 ---
 
 ## Project Structure
 
 ```text
-TransitOps-AI/
-
-├── client/
-├── server/
-├── shared/
-├── docs/
-├── docker/
+.
+├── src/
+│   ├── routes/                 # File-based routes (TanStack Start)
+│   │   ├── __root.tsx          # App shell + head metadata
+│   │   ├── index.tsx           # Landing page
+│   │   ├── auth.tsx            # Sign in / sign up
+│   │   └── _authenticated/     # Protected routes
+│   │       ├── dashboard.tsx
+│   │       ├── vehicles.tsx
+│   │       ├── drivers.tsx
+│   │       ├── trips.tsx
+│   │       ├── maintenance.tsx
+│   │       ├── fuel.tsx
+│   │       ├── reports.tsx
+│   │       ├── assistant.tsx   # AI Fleet Copilot
+│   │       ├── audit.tsx       # Tamper-evident audit trail
+│   │       └── portal.tsx      # Driver Portal
+│   ├── components/             # UI + layout components
+│   ├── lib/                    # auth, fleet, ops, audit, ai helpers
+│   ├── integrations/supabase/  # Generated Cloud client & types
+│   └── styles.css              # Design system (OKLCH tokens)
+├── supabase/migrations/        # Database schema, RLS, triggers
+├── docs/screenshots/           # Asset pointers for README images
 └── README.md
 ```
 
 ---
 
-## Installation
+## Data Model
 
-```bash
-git clone <repository-url>
+Core tables (all protected with RLS):
 
-cd TransitOps-AI
-
-npm install
-```
-
----
-
-## Environment Variables
-
-Create a `.env` file and configure:
-
-```env
-DATABASE_URL=
-
-JWT_SECRET=
-
-GROQ_API_KEY=
-
-GEMINI_API_KEY=
-
-CLOUDINARY_URL=
-```
+- `profiles` — workspace members
+- `user_roles` — role assignments (separate from profiles for security)
+- `vehicles` — fleet registry
+- `drivers` — driver records
+- `trips` — trip & dispatch records
+- `maintenance_logs` — service history
+- `fuel_logs` — fuel entries
+- `expenses` — operational costs
+- `audit_logs` — hash-chained, tamper-evident event trail
 
 ---
 
-## Running the Project
+## Running Locally
 
-### Start Development Server
+This is a Lovable project. Development, preview, and deployment are managed
+through the Lovable editor — changes are reflected in the live preview
+automatically.
 
-```bash
-npm run dev
-```
-
-### Run Backend
+For local development against a checkout:
 
 ```bash
-npm run server
+bun install
+bun run dev
 ```
 
-### Prisma
-
-```bash
-npx prisma migrate dev
-
-npx prisma db seed
-```
+The app runs on `http://localhost:8080`.
 
 ---
 
-## API Modules
+## Roles
 
-* Authentication
-* Vehicles
-* Drivers
-* Trips
-* Dispatch
-* Maintenance
-* Fuel
-* Expenses
-* Analytics
-* AI Services
-* Compliance
+| Role       | Access |
+|------------|--------|
+| Admin      | Full access to every module and settings |
+| Manager    | Vehicles, drivers, reports, maintenance |
+| Dispatcher | Create trips and run the dispatch workflow |
+| Driver     | View assigned trips and submit logs (Driver Portal) |
+| Viewer     | Read-only access to dashboards and reports |
+
+> The first account created becomes the workspace administrator.
 
 ---
 
 ## Future Enhancements
 
-* GPS Tracking
-* Live Vehicle Monitoring
-* Route Optimization
-* Predictive Maintenance
-* Mobile Application
-* Multi-Tenant Support
-* IoT Integration
+- GPS tracking & live vehicle monitoring
+- Route optimization
+- Predictive maintenance
+- OCR receipt processing & spreadsheet import
+- Mobile application
+- Multi-tenant support
+- IoT integration
 
 ---
 
 ## License
 
-This project was developed as part of the **TransitOps AI – Smart Transport Operations Platform** and is intended for educational and demonstration purposes.
+Developed as part of the **TransitOps — Smart Fleet Operations Platform** for
+educational and demonstration purposes.
