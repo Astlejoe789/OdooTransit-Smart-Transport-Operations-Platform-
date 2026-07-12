@@ -8,30 +8,6 @@ An Odoo-based transport management platform for managing vehicles, drivers, trip
 
 ---
 
-# 📖 Table of Contents
-
-- Overview
-- Business Problem
-- Objectives
-- Target Users
-- Core Features
-- Business Rules
-- Technology Stack
-- System Architecture
-- Project Structure
-- Development Roadmap
-- Database Design
-- AI Features
-- Security
-- Installation
-- Environment Variables
-- Running the Project
-- API Overview
-- User Roles
-- Future Enhancements
-- License
-
----
 
 # 🚀 Overview
 
